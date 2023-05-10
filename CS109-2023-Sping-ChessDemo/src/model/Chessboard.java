@@ -39,19 +39,15 @@ public class Chessboard {
         grid[0][0].setPiece(new ChessPiece(PlayerColor.RED, "Lion",7));
         grid[2][6].setPiece(new ChessPiece(PlayerColor.RED, "Elephant",8));
     }
-
     public ChessPiece getChessPieceAt(ChessboardPoint point) {
         return getGridAt(point).getPiece();
     }
-
     private Cell getGridAt(ChessboardPoint point) {
         return grid[point.getRow()][point.getCol()];
     }
-
     private int calculateDistance(ChessboardPoint src, ChessboardPoint dest) {
         return Math.abs(src.getRow() - dest.getRow()) + Math.abs(src.getCol() - dest.getCol());
     }
-
     private ChessPiece removeChessPiece(ChessboardPoint point) {
         ChessPiece chessPiece = getChessPieceAt(point);
         getGridAt(point).removePiece();
@@ -289,5 +285,16 @@ public class Chessboard {
                 getGridAt(point).equals(grid[5][2])||
                 getGridAt(point).equals(grid[5][4])||
                 getGridAt(point).equals(grid[5][5]);
+    }
+    //winCheck
+    public void winCheck() {
+        ChessboardPoint redGeneral = new ChessboardPoint(0, 3);
+        ChessboardPoint blueGeneral = new ChessboardPoint(9, 3);
+        if (getChessPieceAt(redGeneral) != null && getChessPieceAt(redGeneral).getOwner() == PlayerColor.BLUE) {
+            System.out.println("蓝色胜利");
+        }
+        if (getChessPieceAt(blueGeneral) != null && getChessPieceAt(blueGeneral).getOwner() == PlayerColor.RED ) {
+            System.out.println("红色胜利");
+        }
     }
 }

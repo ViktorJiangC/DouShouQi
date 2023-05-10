@@ -41,7 +41,6 @@ public class GameController implements GameListener {
         currentPlayer = currentPlayer == PlayerColor.BLUE ? PlayerColor.RED : PlayerColor.BLUE;
     }
     //Trapped chess piece turn++
-    //蓝红两色应该分离
     private void trappedTurnMultiplier() {
         int[][] trapLocationRed = {{0, 2}, {0, 4}, {1, 3}};
         for (int[] ints : trapLocationRed) {
@@ -76,41 +75,35 @@ public class GameController implements GameListener {
             }
         }
     }
-    //1:blue win 2:red win 0:continue
-    private int winner() {
-         if(model.getChessPieceOwner(new ChessboardPoint(0, 3)).equals(PlayerColor.BLUE)){
-             return 1;
-         }
-         if(model.getChessPieceOwner(new ChessboardPoint(8, 3)).equals(PlayerColor.RED)){
-             return 2;
-         }
-         return 0;
-    }
-    private void gameOver() {
-        int winner = winner();
-        if (winner == 1) {
-            view.showWinner(PlayerColor.BLUE);
-        } else if (winner == 2) {
-            view.showWinner(PlayerColor.RED);
-        }
-    }
-    // click an empty cell
     @Override
-    //通过点击来实现移动的方法
+    //点击空白格子
     public void onPlayerClickCell(ChessboardPoint point, CellComponent component) {
         if (selectedPoint != null && model.isValidMove(selectedPoint, point)) {
             //下面三行移动棋子到新的位置
             model.moveChessPiece(selectedPoint, point);
             view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
+            view.repaint();
+            //清空选中的棋子
             selectedPoint = null;
+            win();
             //交换玩家
             swapColor();
-            //重新绘图
-            view.repaint();
         }
     }
-    //click a cell with a chess
+    public void win() {
+        ChessboardPoint redDens = new ChessboardPoint(0, 3);
+        ChessboardPoint blueDens = new ChessboardPoint(8, 3);
+        if (model.getChessPieceAt(redDens) != null && model.getChessPieceAt(redDens).getOwner() == PlayerColor.BLUE) {
+            //此处应该有弹窗
+            System.out.println("Blue win!");
+        }
+        if (model.getChessPieceAt(blueDens) != null && model.getChessPieceAt(blueDens).getOwner() == PlayerColor.RED) {
+            //此处应该有弹窗
+            System.out.println("Red win!");
+        }
+    }
     @Override
+    //点击有棋子的格子
     public void onPlayerClickChessPiece(ChessboardPoint point, ChessComponent component) {
         if (selectedPoint == null) {
             if (model.getChessPieceOwner(point).equals(currentPlayer)) {

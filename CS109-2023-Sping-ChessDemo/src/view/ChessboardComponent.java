@@ -133,5 +133,22 @@ public class ChessboardComponent extends JComponent {
     }
     //胜利后的结算动画
     public void showWinner(PlayerColor playerColor) {
+        new JFrame() {
+            {
+                setSize(300, 200);
+                setLocationRelativeTo(null);
+                setUndecorated(true);
+                setAlwaysOnTop(true);
+                setLayout(new BorderLayout());
+                add(new JLabel(playerColor + " Win!"), BorderLayout.CENTER);
+                setVisible(true);
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                dispose();
+            }
+        };
     }
 }
