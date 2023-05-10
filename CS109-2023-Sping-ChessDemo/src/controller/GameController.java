@@ -40,18 +40,34 @@ public class GameController implements GameListener {
         trappedTurnMultiplier();
         currentPlayer = currentPlayer == PlayerColor.BLUE ? PlayerColor.RED : PlayerColor.BLUE;
     }
-
     //Trapped chess piece turn++
+    //蓝红两色应该分离
     private void trappedTurnMultiplier() {
-        int[][] trapLocation = {{0, 2}, {0, 4}, {1, 3}, {8, 2}, {8, 4}, {7, 3}};
-        for (int[] ints : trapLocation) {
+        int[][] trapLocationRed = {{0, 2}, {0, 4}, {1, 3}};
+        for (int[] ints : trapLocationRed) {
             ChessboardPoint point = new ChessboardPoint(ints[0], ints[1]);
             ChessPiece p = model.getChessPieceAt(point);
-            if(p != null && p.getTrappedturn()==0) {
+            if(p != null && p.getTrappedturn()==0 && p.getOwner() == PlayerColor.BLUE) {
                 p.setTrapped(true);
                 p.setTrappedturn(p.getTrappedturn() + 1);
             }
-            if(p != null && p.getTrappedturn()>=0) {
+            if(p != null && p.getTrappedturn()>=0 && p.getOwner() == PlayerColor.BLUE) {
+                p.setTrappedturn(p.getTrappedturn() + 1);
+            }
+            if (p != null && p.getTrappedturn() > 4) {
+                p.setTrappedturn(0);
+                p.setTrapped(false);
+            }
+        }
+        int[][] trapLocationBlue = {{8, 2}, {8, 4}, {7, 3}};
+        for (int[] ints : trapLocationBlue) {
+            ChessboardPoint point = new ChessboardPoint(ints[0], ints[1]);
+            ChessPiece p = model.getChessPieceAt(point);
+            if(p != null && p.getTrappedturn()==0 && p.getOwner() == PlayerColor.RED) {
+                p.setTrapped(true);
+                p.setTrappedturn(p.getTrappedturn() + 1);
+            }
+            if(p != null && p.getTrappedturn()>=0 && p.getOwner() == PlayerColor.RED) {
                 p.setTrappedturn(p.getTrappedturn() + 1);
             }
             if (p != null && p.getTrappedturn() > 4) {
@@ -60,7 +76,6 @@ public class GameController implements GameListener {
             }
         }
     }
-
     //1:blue win 2:red win 0:continue
     private int winner() {
          if(model.getChessPieceOwner(new ChessboardPoint(0, 3)).equals(PlayerColor.BLUE)){
@@ -94,7 +109,7 @@ public class GameController implements GameListener {
             view.repaint();
         }
     }
-    // click a cell with a chess
+    //click a cell with a chess
     @Override
     public void onPlayerClickChessPiece(ChessboardPoint point, ChessComponent component) {
         if (selectedPoint == null) {
@@ -118,5 +133,4 @@ public class GameController implements GameListener {
             swapColor();
         }
     }
-
 }

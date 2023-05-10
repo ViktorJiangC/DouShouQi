@@ -156,7 +156,7 @@ public class Chessboard {
                 if (getChessPieceAt(src) == null || getChessPieceAt(dest) != null) {
                     return false;
                 }
-                return calculateDistance(src, dest) == 1 &&  !isRiverCell(dest);
+                return calculateDistance(src, dest) == 1 && !isRiverCell(dest);
             }
         }
         //其他棋子移动的判断
@@ -170,7 +170,7 @@ public class Chessboard {
             return false;
         }
         //front
-        if (src.getCol() == dest.getCol() && src.getRow() > dest.getCol()) {
+        if (src.getCol() == dest.getCol() && src.getRow() > dest.getRow()) {
             if(calculateDistance(src, dest) != 4){
                 return false;
             }
@@ -183,7 +183,7 @@ public class Chessboard {
             return true;
         }
         //back
-        if (src.getCol() == dest.getCol() && src.getRow() < dest.getCol()) {
+        if (src.getCol() == dest.getCol() && src.getRow() < dest.getRow()) {
             if(calculateDistance(src, dest) != 4){
                 return false;
             }
@@ -223,7 +223,7 @@ public class Chessboard {
     }
     public boolean canJumpOverRiverToCapture(ChessboardPoint src, ChessboardPoint dest) {
         //front
-        if (src.getCol() == dest.getCol() && src.getRow() > dest.getCol()) {
+        if (src.getCol() == dest.getCol() && src.getRow() > dest.getRow()) {
             if(calculateDistance(src, dest) != 4){
                 return false;
             }
@@ -236,7 +236,7 @@ public class Chessboard {
             return getChessPieceAt(dest).getRank() <= getChessPieceAt(src).getRank();
         }
         //back
-        if (src.getCol() == dest.getCol() && src.getRow() < dest.getCol()) {
+        if (src.getCol() == dest.getCol() && src.getRow() < dest.getRow()) {
             if(calculateDistance(src, dest) != 4){
                 return false;
             }
