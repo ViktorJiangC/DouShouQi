@@ -4,8 +4,6 @@ import model.*;
 import view.CellComponent;
 import view.ChessComponent;
 import view.ChessboardComponent;
-import controller.MinMaxAlgorithm;
-
 import static controller.MinMaxAlgorithm.*;
 
 /**
@@ -53,6 +51,7 @@ public class GameController implements GameListener {
         for (int[] ints : trapLocationRed) {
             ChessboardPoint point = new ChessboardPoint(ints[0], ints[1]);
             ChessPiece p = model.getChessPieceAt(point);
+
             if(p != null && p.getTrappedturn()==0 && p.getOwner() == PlayerColor.BLUE) {
                 p.setTrapped(true);
                 p.setTrappedturn(p.getTrappedturn() + 1);
@@ -61,7 +60,7 @@ public class GameController implements GameListener {
                 p.setTrappedturn(p.getTrappedturn() + 1);
             }
             //PvP这里改成>4
-            if (p != null && p.getTrappedturn() > 2) {
+            if (p != null && p.getTrappedturn() > 4) {
                 p.setTrappedturn(0);
                 p.setTrapped(false);
             }
@@ -77,6 +76,7 @@ public class GameController implements GameListener {
             if(p != null && p.getTrappedturn()>=0 && p.getOwner() == PlayerColor.RED) {
                 p.setTrappedturn(p.getTrappedturn() + 1);
             }
+            //PvP这里改成>4
             if (p != null && p.getTrappedturn() > 4) {
                 p.setTrappedturn(0);
                 p.setTrapped(false);
@@ -93,6 +93,7 @@ public class GameController implements GameListener {
             view.repaint();
             //清空选中的棋子
             selectedPoint = null;
+            trappedTurnMultiplier();
             //交换玩家   PvP 就把makeAIMove换成 swapColor()，再保留之后的repaint
             makeAIMove();
             win();
@@ -115,49 +116,53 @@ public class GameController implements GameListener {
         //将目前的棋盘复制到c
         minimax(c, true,0, Integer.MAX_VALUE, Integer.MIN_VALUE);
         //将c的棋子复制回到model
-
         ChessboardPoint src = bMove[0];
         ChessboardPoint dest = bMove[1];
         ChessboardPoint esrc = easyMove(model)[0];
         ChessboardPoint edest = easyMove(model)[1];
         prevMove[1] = dest;
         prevMove[0] = src;
-        if(model.getChessPieceAt(src)!= null && model.getChessPieceAt(dest)== null) {
-            if (getModel().isValidMove(src, dest)) {
-                view.setChessComponentAtGrid(dest, view.removeChessComponentAtGrid(src));
-                view.repaint();
-                getModel().moveChessPiece(src, dest);
-            }
-        }else{
-            if(model.getChessPieceAt(esrc)!= null && model.getChessPieceAt(edest)== null) {
-                if (getModel().isValidMove(esrc, edest)) {
-                    view.setChessComponentAtGrid(edest, view.removeChessComponentAtGrid(esrc));
+        for(int i=0; i<=1; i++){
+            if(model.getChessPieceAt(src)!= null && model.getChessPieceAt(dest)== null) {
+                if (getModel().isValidMove(src, dest)) {
+                    model.getChessPieceAt(src).setRepeatTurn(model.getChessPieceAt(src).getRepeatTurn()+1);
+                    view.setChessComponentAtGrid(dest, view.removeChessComponentAtGrid(src));
+                    getModel().moveChessPiece(src, dest);
                     view.repaint();
-                    getModel().moveChessPiece(esrc, edest);
+                    break;
+                }
+            }else{
+                if(model.getChessPieceAt(esrc)!= null && model.getChessPieceAt(edest)== null) {
+
+                    if (getModel().isValidMove(esrc, edest)) {
+                        model.getChessPieceAt(esrc).setRepeatTurn(model.getChessPieceAt(esrc).getRepeatTurn()+1);
+                        view.setChessComponentAtGrid(edest, view.removeChessComponentAtGrid(esrc));
+                        getModel().moveChessPiece(esrc, edest);
+                        view.repaint();
+                        break;
+                    }
+                }
+            }
+            if(model.getChessPieceAt(src) != null && model.getChessPieceAt(dest)!= null) {
+                if (getModel().isValidCapture(src, dest)) {
+                    model.getChessPieceAt(src).setRepeatTurn(model.getChessPieceAt(src).getRepeatTurn()+1);
+                    view.removeChessComponentAtGrid(dest);
+                    view.setChessComponentAtGrid(dest, view.removeChessComponentAtGrid(src));
+                    getModel().captureChessPiece(src, dest);
+                    view.repaint();
+                    break;
+                }
+            } else if((model.getChessPieceAt(esrc)!= null && model.getChessPieceAt(edest)!= null)) {
+                if (getModel().isValidCapture(esrc, edest)) {
+                    model.getChessPieceAt(esrc).setRepeatTurn(model.getChessPieceAt(esrc).getRepeatTurn()+1);
+                    view.removeChessComponentAtGrid(edest);
+                    view.setChessComponentAtGrid(edest, view.removeChessComponentAtGrid(esrc));
+                    getModel().captureChessPiece(esrc, edest);
+                    view.repaint();
+                    break;
                 }
             }
         }
-
-        if(model.getChessPieceAt(src)!= null && model.getChessPieceAt(dest)!= null) {
-            if (getModel().isValidCapture(src, dest)) {
-
-                view.removeChessComponentAtGrid(dest);
-                view.setChessComponentAtGrid(dest, view.removeChessComponentAtGrid(src));
-
-                getModel().captureChessPiece(src, dest);
-                view.repaint();
-            }
-        } else if (getModel().isValidCapture(esrc, edest)) {
-            if(model.getChessPieceAt(esrc)!= null && model.getChessPieceAt(edest)!= null) {
-
-                view.removeChessComponentAtGrid(edest);
-                view.setChessComponentAtGrid(edest, view.removeChessComponentAtGrid(esrc));
-
-                getModel().captureChessPiece(esrc, edest);
-                view.repaint();
-            }
-        }
-
         trappedTurnMultiplier();
     }
     public void win() {
@@ -191,6 +196,7 @@ public class GameController implements GameListener {
             view.removeChessComponentAtGrid(point);
             view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
             model.captureChessPiece(selectedPoint, point);
+            trappedTurnMultiplier();
             selectedPoint = null;
             view.repaint();
             //swapColor();PvP 就把makeAIMove换成 swapColor()

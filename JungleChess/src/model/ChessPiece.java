@@ -6,12 +6,19 @@ public class ChessPiece {
     private String name;
     private int rank;
     private int trappedturn = 0;
+    private int repeatTurn =0;
     private boolean isTrapped = false;
     public boolean isTrapped() {
         return isTrapped;
     }
     public void setTrapped(boolean trapped) {
         isTrapped = trapped;
+    }
+    public int getRepeatTurn() {
+        return repeatTurn;
+    }
+    public void setRepeatTurn(int repeatTurn) {
+        this.repeatTurn = repeatTurn;
     }
 
     public ChessPiece(PlayerColor owner, String name, int rank) {
@@ -36,6 +43,5 @@ public class ChessPiece {
     public int getTrappedturn() {
         return trappedturn;
     }
-
 
 }
