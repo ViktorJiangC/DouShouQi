@@ -60,6 +60,7 @@ public class GameController implements GameListener {
             if(p != null && p.getTrappedturn()>=0 && p.getOwner() == PlayerColor.BLUE) {
                 p.setTrappedturn(p.getTrappedturn() + 1);
             }
+            //PvP这里改成>4
             if (p != null && p.getTrappedturn() > 2) {
                 p.setTrappedturn(0);
                 p.setTrapped(false);
@@ -98,16 +99,42 @@ public class GameController implements GameListener {
             //view.repaint();
         }
     }
+    public static Chessboard copyFrom(Chessboard B){
+        Chessboard c = new Chessboard();
+        for (int i = 0; i < Constant.CHESSBOARD_ROW_SIZE.getNum(); i++) {
+            for (int j = 0; j < Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
+                ChessboardPoint point = new ChessboardPoint(i, j);
+                ChessPiece p = B.getChessPieceAt(point);
+                c.setChessPiece(point, p);
+            }
+        }
+        return c;
+    }
     private void makeAIMove() {
-        trappedTurnMultiplier();
-        // 获取最佳移动
-        ChessboardPoint src = easyMove(model)[0];
-        ChessboardPoint dest = easyMove(model)[1];
+        Chessboard c = copyFrom(model);
+        //将目前的棋盘复制到c
+        minimax(c, true,0, Integer.MAX_VALUE, Integer.MIN_VALUE);
+        //将c的棋子复制回到model
+
+        ChessboardPoint src = bMove[0];
+        ChessboardPoint dest = bMove[1];
+        ChessboardPoint esrc = easyMove(model)[0];
+        ChessboardPoint edest = easyMove(model)[1];
+        prevMove[1] = dest;
+        prevMove[0] = src;
         if(model.getChessPieceAt(src)!= null && model.getChessPieceAt(dest)== null) {
             if (getModel().isValidMove(src, dest)) {
                 view.setChessComponentAtGrid(dest, view.removeChessComponentAtGrid(src));
                 view.repaint();
                 getModel().moveChessPiece(src, dest);
+            }
+        }else{
+            if(model.getChessPieceAt(esrc)!= null && model.getChessPieceAt(edest)== null) {
+                if (getModel().isValidMove(esrc, edest)) {
+                    view.setChessComponentAtGrid(edest, view.removeChessComponentAtGrid(esrc));
+                    view.repaint();
+                    getModel().moveChessPiece(esrc, edest);
+                }
             }
         }
 
@@ -120,7 +147,18 @@ public class GameController implements GameListener {
                 getModel().captureChessPiece(src, dest);
                 view.repaint();
             }
+        } else if (getModel().isValidCapture(esrc, edest)) {
+            if(model.getChessPieceAt(esrc)!= null && model.getChessPieceAt(edest)!= null) {
+
+                view.removeChessComponentAtGrid(edest);
+                view.setChessComponentAtGrid(edest, view.removeChessComponentAtGrid(esrc));
+
+                getModel().captureChessPiece(esrc, edest);
+                view.repaint();
+            }
         }
+
+        trappedTurnMultiplier();
     }
     public void win() {
         ChessboardPoint redDens = new ChessboardPoint(0, 3);

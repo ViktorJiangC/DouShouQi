@@ -77,13 +77,16 @@ public class Chessboard {
         boolean notSameOwner = getChessPieceAt(src).getOwner() != getChessPieceAt(dest).getOwner();
         boolean movable = calculateDistance(src, dest) == 1 && !isRiverCell(dest);
         //if a piece is trapped in a trap, it can be captured by any piece
+        if(!notSameOwner){
+            return false;
+        }
         if (getChessPieceAt(src).isTrapped()) {
             return false;
         }
-        if (getChessPieceAt(dest).isTrapped()&& movable && notSameOwner) {
+        if (getChessPieceAt(dest).isTrapped() && movable) {
             return true;
         }
-        if (srcRank == 1 && destRank == 8 && notSameOwner && movable && !isRiverCell(src)) {
+        if (srcRank == 1 && destRank == 8 && movable && !isRiverCell(src)) {
             return true;
         }
         if (srcRank == 8 && destRank == 1 ) {
@@ -94,7 +97,7 @@ public class Chessboard {
             if(needJumpOverRiver){
                 return canJumpOverRiverToCapture(src, dest);    //判断是否可以跳河吃子
             }else{
-                return srcRank >= destRank && notSameOwner && movable;
+                return srcRank >= destRank && movable;
             }
         }
         // rank 高的吃rank低的
@@ -104,7 +107,7 @@ public class Chessboard {
         return grid;
     }
     public PlayerColor getChessPieceOwner(ChessboardPoint point) {
-        return getGridAt(point).getPiece().getOwner();
+        return getChessPieceAt(point).getOwner();
     }
     public boolean needJumpOverRiver(ChessboardPoint src, ChessboardPoint dest){
         if (src.getCol() == dest.getCol() && src.getRow() > dest.getRow()) {
