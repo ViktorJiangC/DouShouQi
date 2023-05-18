@@ -105,7 +105,7 @@ public class MinMaxAlgorithm {
 
                 int x = piece.getRow();
                 int y = piece.getCol();
-                if(board.getChessPieceAt(piece).getRank()==6|| board.getChessPieceAt(piece).getRank()==7) {
+                if(board.getChessPieceAt(piece).getRank()==6 || board.getChessPieceAt(piece).getRank()==7) {
                     for (int[] dir : LTdir) {
                         int dx = dir[0];
                         int dy = dir[1];
@@ -181,7 +181,7 @@ public class MinMaxAlgorithm {
     }
     private static boolean notRepeatedChess(Chessboard board ,ChessboardPoint P){
         ChessPiece piece = board.getChessPieceAt(P);
-        return piece.getRepeatTurn() <= 1;
+        return piece.getRepeatTurn() <= 2;
     }
     private static boolean isGameOver(Chessboard board) {
         ChessboardPoint redDens = new ChessboardPoint(0, 3);
@@ -195,21 +195,21 @@ public class MinMaxAlgorithm {
     }
 
     private static final int[][] redTable = {
-            {10,10,12,0,12,10,10},
-            {11,13,12,13,12,13,11},
-            {11,12,13,14,13,12,11},
+            {10,10,10,0,10,10,10},
+            {10,11,11,10,11,11,10},
+            {11,12,13,200,13,12,11},
             {14,13,13,15,13,13,14},
             {15,14,14,15,14,14,15},
             {16,15,15,17,15,15,16},
             {17,17,18,22,18,17,17},
-            {17,18,22,21,22,18,17},
-            {18,21,21,20000,21,21,18}
+            {17,18,22,25,22,18,17},
+            {18,21,25,2000,25,21,18}
     };
     private static final int[][] blueTable ={
             {18,21,50,200,50,21,18},
             {17,18,22,50,22,18,17},
-            {17,17,18,35,18,17,17},
-            {16,15,15,17,15,15,16},
+            {17,17,18,200,18,17,17},
+            {16,15,15,25,15,15,16},
             {15,14,14,15,14,14,15},
             {14,13,13,14,13,13,14},
             {11,12,13,14,13,12,11},
@@ -221,12 +221,12 @@ public class MinMaxAlgorithm {
         for(ChessboardPoint P : getRedPieces(board)){
             ChessPiece piece = board.getChessPieceAt(P);
             int rank = piece.getRank();
-            score += rank*redTable[P.getRow()][P.getCol()];
+            score += (9-rank)*redTable[P.getRow()][P.getCol()];
         }
         for(ChessboardPoint P : getBluePieces(board)){
             ChessPiece piece = board.getChessPieceAt(P);
             int rank = piece.getRank();
-            score -= 50*rank*blueTable[P.getRow()][P.getCol()];
+            score -= 10*(9-rank)*blueTable[P.getRow()][P.getCol()];
         }
         return score;
     }
@@ -328,7 +328,11 @@ public class MinMaxAlgorithm {
     // 判断移动是否合法
     private static boolean validMove(Chessboard board, ChessboardPoint src, ChessboardPoint dest) {
         //能动和能吃一起判断
+        ChessPiece srcPiece = board.getChessPieceAt(src);
         ChessPiece destPiece = board.getChessPieceAt(dest);
+        if(srcPiece.getOwner()==PlayerColor.RED && dest.equals(new ChessboardPoint(0,3))){
+            return false;
+        }
         if (destPiece != null) {
             return board.isValidCapture(src, dest);
         }

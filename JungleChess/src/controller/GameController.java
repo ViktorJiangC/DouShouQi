@@ -61,7 +61,6 @@ public class GameController implements GameListener {
             }
             //PvP这里改成>4
             if (p != null && p.getTrappedturn() > 4) {
-                p.setTrappedturn(0);
                 p.setTrapped(false);
             }
         }
@@ -78,8 +77,17 @@ public class GameController implements GameListener {
             }
             //PvP这里改成>4
             if (p != null && p.getTrappedturn() > 4) {
-                p.setTrappedturn(0);
                 p.setTrapped(false);
+            }
+        }
+    }
+    private void trappedTurnEraser() {
+        int[][] untrapLocation = {{0, 1}, {0, 3}, {0, 5},{1, 2},{1, 4},{2, 3},{6, 3},{7, 2},{7, 4},{8, 1},{8, 3},{8, 5}};
+        for (int[] ints : untrapLocation) {
+            ChessboardPoint point = new ChessboardPoint(ints[0], ints[1]);
+            ChessPiece p = model.getChessPieceAt(point);
+            if (p != null && p.getTrappedturn() > 0) {
+                p.setTrappedturn(0);
             }
         }
     }
@@ -94,6 +102,7 @@ public class GameController implements GameListener {
             //清空选中的棋子
             selectedPoint = null;
             trappedTurnMultiplier();
+            trappedTurnEraser();
             //交换玩家   PvP 就把makeAIMove换成 swapColor()，再保留之后的repaint
             makeAIMove();
             win();
@@ -118,10 +127,12 @@ public class GameController implements GameListener {
         //将c的棋子复制回到model
         ChessboardPoint src = bMove[0];
         ChessboardPoint dest = bMove[1];
+
         ChessboardPoint esrc = easyMove(model)[0];
         ChessboardPoint edest = easyMove(model)[1];
         prevMove[1] = dest;
         prevMove[0] = src;
+        loop:
         for(int i=0; i<=1; i++){
             if(model.getChessPieceAt(src)!= null && model.getChessPieceAt(dest)== null) {
                 if (getModel().isValidMove(src, dest)) {
@@ -129,17 +140,16 @@ public class GameController implements GameListener {
                     view.setChessComponentAtGrid(dest, view.removeChessComponentAtGrid(src));
                     getModel().moveChessPiece(src, dest);
                     view.repaint();
-                    break;
+                    break loop;
                 }
             }else{
                 if(model.getChessPieceAt(esrc)!= null && model.getChessPieceAt(edest)== null) {
-
                     if (getModel().isValidMove(esrc, edest)) {
                         model.getChessPieceAt(esrc).setRepeatTurn(model.getChessPieceAt(esrc).getRepeatTurn()+1);
                         view.setChessComponentAtGrid(edest, view.removeChessComponentAtGrid(esrc));
                         getModel().moveChessPiece(esrc, edest);
                         view.repaint();
-                        break;
+                        break loop;
                     }
                 }
             }
@@ -150,7 +160,7 @@ public class GameController implements GameListener {
                     view.setChessComponentAtGrid(dest, view.removeChessComponentAtGrid(src));
                     getModel().captureChessPiece(src, dest);
                     view.repaint();
-                    break;
+                    break loop;
                 }
             } else if((model.getChessPieceAt(esrc)!= null && model.getChessPieceAt(edest)!= null)) {
                 if (getModel().isValidCapture(esrc, edest)) {
@@ -159,11 +169,12 @@ public class GameController implements GameListener {
                     view.setChessComponentAtGrid(edest, view.removeChessComponentAtGrid(esrc));
                     getModel().captureChessPiece(esrc, edest);
                     view.repaint();
-                    break;
+                    break loop;
                 }
             }
         }
         trappedTurnMultiplier();
+        trappedTurnEraser();
     }
     public void win() {
         ChessboardPoint redDens = new ChessboardPoint(0, 3);
@@ -197,6 +208,7 @@ public class GameController implements GameListener {
             view.setChessComponentAtGrid(point, view.removeChessComponentAtGrid(selectedPoint));
             model.captureChessPiece(selectedPoint, point);
             trappedTurnMultiplier();
+            trappedTurnEraser();
             selectedPoint = null;
             view.repaint();
             //swapColor();PvP 就把makeAIMove换成 swapColor()
