@@ -18,6 +18,9 @@ public class ChessPiece {
         return repeatTurn;
     }
     public void setRepeatTurn(int repeatTurn) {
+        if(repeatTurn>=2){
+            this.trappedturn = 0;
+        }
         this.repeatTurn = repeatTurn;
     }
 

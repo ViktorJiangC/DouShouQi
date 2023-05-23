@@ -22,22 +22,22 @@ public class Chessboard {
     }
     //初始化棋子
     private void initPieces() {
-        grid[6][0].setPiece(new ChessPiece(PlayerColor.BLUE, "Elephant",8));
-        grid[8][6].setPiece(new ChessPiece(PlayerColor.BLUE, "Lion",7));
-        grid[8][0].setPiece(new ChessPiece(PlayerColor.BLUE, "Tiger",6));
-        grid[6][4].setPiece(new ChessPiece(PlayerColor.BLUE, "Leopard",5));
-        grid[6][2].setPiece(new ChessPiece(PlayerColor.BLUE, "Wolf",4));
-        grid[7][5].setPiece(new ChessPiece(PlayerColor.BLUE, "Dog",3));
-        grid[7][1].setPiece(new ChessPiece(PlayerColor.BLUE, "Cat",2));
-        grid[6][6].setPiece(new ChessPiece(PlayerColor.BLUE, "Rat",1));
-        grid[2][0].setPiece(new ChessPiece(PlayerColor.RED, "Rat",1));
-        grid[1][5].setPiece(new ChessPiece(PlayerColor.RED, "Cat",2));
-        grid[1][1].setPiece(new ChessPiece(PlayerColor.RED, "Dog",3));
-        grid[2][4].setPiece(new ChessPiece(PlayerColor.RED, "Wolf",4));
-        grid[2][2].setPiece(new ChessPiece(PlayerColor.RED, "Leopard",5));
-        grid[0][6].setPiece(new ChessPiece(PlayerColor.RED, "Tiger",6));
-        grid[0][0].setPiece(new ChessPiece(PlayerColor.RED, "Lion",7));
-        grid[2][6].setPiece(new ChessPiece(PlayerColor.RED, "Elephant",8));
+        grid[6][0].setPiece(new ChessPiece(PlayerColor.BLUE, "象",8));
+        grid[8][6].setPiece(new ChessPiece(PlayerColor.BLUE, "狮",7));
+        grid[8][0].setPiece(new ChessPiece(PlayerColor.BLUE, "虎",6));
+        grid[6][4].setPiece(new ChessPiece(PlayerColor.BLUE, "豹",5));
+        grid[6][2].setPiece(new ChessPiece(PlayerColor.BLUE, "狼",4));
+        grid[7][5].setPiece(new ChessPiece(PlayerColor.BLUE, "狗",3));
+        grid[7][1].setPiece(new ChessPiece(PlayerColor.BLUE, "猫",2));
+        grid[6][6].setPiece(new ChessPiece(PlayerColor.BLUE, "鼠",1));
+        grid[2][0].setPiece(new ChessPiece(PlayerColor.RED, "鼠",1));
+        grid[1][5].setPiece(new ChessPiece(PlayerColor.RED, "猫",2));
+        grid[1][1].setPiece(new ChessPiece(PlayerColor.RED, "狗",3));
+        grid[2][4].setPiece(new ChessPiece(PlayerColor.RED, "狼",4));
+        grid[2][2].setPiece(new ChessPiece(PlayerColor.RED, "豹",5));
+        grid[0][6].setPiece(new ChessPiece(PlayerColor.RED, "虎",6));
+        grid[0][0].setPiece(new ChessPiece(PlayerColor.RED, "狮",7));
+        grid[2][6].setPiece(new ChessPiece(PlayerColor.RED, "象",8));
     }
     public ChessPiece getChessPieceAt(ChessboardPoint point) {
         return getGridAt(point).getPiece();

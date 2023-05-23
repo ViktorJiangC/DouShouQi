@@ -9,7 +9,7 @@ import static model.Constant.CHESSBOARD_COL_SIZE;
 import static model.Constant.CHESSBOARD_ROW_SIZE;
 
 public class MinMaxAlgorithm {
-    private static final int MAX_DEPTH = 4; // 最大深度
+    private static final int MAX_DEPTH = 3; // 最大深度
     public static ChessboardPoint[] bMove = new ChessboardPoint[2];// 最佳走法
     public static ChessboardPoint[] prevMove = new ChessboardPoint[2];// 上一步走法
 
@@ -31,7 +31,7 @@ public class MinMaxAlgorithm {
 
                 int x = piece.getRow();
                 int y = piece.getCol();
-                if(board.getChessPieceAt(piece).getRank()==6||board.getChessPieceAt(piece).getRank()==7) {
+                if (board.getChessPieceAt(piece).getRank() == 6 || board.getChessPieceAt(piece).getRank() == 7) {
                     for (int[] dir : LTdir) {
                         int dx = dir[0];
                         int dy = dir[1];
@@ -42,7 +42,7 @@ public class MinMaxAlgorithm {
                             continue;
                         }
                         ChessboardPoint newPoint = new ChessboardPoint(newX, newY);
-                        if (notRepeatedMove(piece, newPoint) &&validMove(board, piece, newPoint)&& notRepeatedChess(board,piece)) {
+                        if (notRepeatedMove(piece, newPoint) && validMove(board, piece, newPoint) && notRepeatedChess(board, piece)) {
                             ChessPiece capturedPiece = board.getChessPieceAt(newPoint);
 
                             Chessboard board1 = copyFrom(board);
@@ -64,7 +64,7 @@ public class MinMaxAlgorithm {
 
                         }
                     }
-                }else{
+                } else {
                     for (int[] dir : simpledir) {
                         int dx = dir[0];
                         int dy = dir[1];
@@ -75,7 +75,7 @@ public class MinMaxAlgorithm {
                             continue;
                         }
                         ChessboardPoint newPoint = new ChessboardPoint(newX, newY);
-                        if (notRepeatedMove(piece, newPoint) && validMove(board, piece, newPoint) && notRepeatedChess(board,piece)) {
+                        if (notRepeatedMove(piece, newPoint) && validMove(board, piece, newPoint) && notRepeatedChess(board, piece)) {
                             ChessPiece capturedPiece = board.getChessPieceAt(newPoint);
 
                             Chessboard board1 = copyFrom(board);
@@ -181,7 +181,7 @@ public class MinMaxAlgorithm {
     }
     private static boolean notRepeatedChess(Chessboard board ,ChessboardPoint P){
         ChessPiece piece = board.getChessPieceAt(P);
-        return piece.getRepeatTurn() <= 2;
+        return piece.getRepeatTurn() <= 1;
     }
     private static boolean isGameOver(Chessboard board) {
         ChessboardPoint redDens = new ChessboardPoint(0, 3);
@@ -221,12 +221,12 @@ public class MinMaxAlgorithm {
         for(ChessboardPoint P : getRedPieces(board)){
             ChessPiece piece = board.getChessPieceAt(P);
             int rank = piece.getRank();
-            score += (9-rank)*redTable[P.getRow()][P.getCol()];
+            score += (10-rank)*redTable[P.getRow()][P.getCol()];
         }
         for(ChessboardPoint P : getBluePieces(board)){
             ChessPiece piece = board.getChessPieceAt(P);
             int rank = piece.getRank();
-            score -= 10*(9-rank)*blueTable[P.getRow()][P.getCol()];
+            score -= 15*(rank)*blueTable[P.getRow()][P.getCol()];
         }
         return score;
     }
@@ -275,20 +275,19 @@ public class MinMaxAlgorithm {
                     int newX = x + dx;
                     int newY = y + dy;
                     ChessboardPoint newPoint = new ChessboardPoint(newX, newY);
-                    if (validMove(board, piece, newPoint)) {
+                    if (validMove(board, piece, newPoint)&& notRepeatedMove(piece,newPoint)) {
                         ChessPiece capturedPiece = board.getChessPieceAt(newPoint);
-                        board.setChessPiece(newPoint, board.getChessPieceAt(piece));
-                        board.setChessPiece(piece, null);
+                        Chessboard board1 = copyFrom(board);
+                        board1.setChessPiece(newPoint, board.getChessPieceAt(piece));
+                        board1.setChessPiece(piece, null);
 
-                        score = evaluate(board);
+                        score = evaluate(board1);
                         if(score>bestScore){
                             bestScore=score;
                             points[0]=piece;
                             points[1]=newPoint;
                         }
 
-                        board.setChessPiece(piece, board.getChessPieceAt(newPoint));
-                        board.setChessPiece(newPoint, capturedPiece);
                     }
                 }
             }else {
@@ -304,20 +303,19 @@ public class MinMaxAlgorithm {
                         int newX = x + dx;
                         int newY = y + dy;
                         ChessboardPoint newPoint = new ChessboardPoint(newX, newY);
-                        if (validMove(board, piece, newPoint)) {
+                        if (validMove(board, piece, newPoint) && notRepeatedMove(piece,newPoint)) {
                             ChessPiece capturedPiece = board.getChessPieceAt(newPoint);
-                            board.setChessPiece(newPoint, board.getChessPieceAt(piece));
-                            board.setChessPiece(piece, null);
+                            Chessboard board1 = copyFrom(board);
+                            board1.setChessPiece(newPoint, board.getChessPieceAt(piece));
+                            board1.setChessPiece(piece, null);
 
-                            score = evaluate(board);
+                            score = evaluate(board1);
                             if(score>bestScore){
                                 bestScore=score;
                                 points[0]=piece;
                                 points[1]=newPoint;
                             }
 
-                            board.setChessPiece(piece, board.getChessPieceAt(newPoint));
-                            board.setChessPiece(newPoint, capturedPiece);
                         }
                     }
                 }

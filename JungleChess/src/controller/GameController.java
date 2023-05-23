@@ -121,60 +121,61 @@ public class GameController implements GameListener {
         return c;
     }
     private void makeAIMove() {
-        Chessboard c = copyFrom(model);
-        //将目前的棋盘复制到c
-        minimax(c, true,0, Integer.MAX_VALUE, Integer.MIN_VALUE);
-        //将c的棋子复制回到model
-        ChessboardPoint src = bMove[0];
-        ChessboardPoint dest = bMove[1];
 
-        ChessboardPoint esrc = easyMove(model)[0];
-        ChessboardPoint edest = easyMove(model)[1];
-        prevMove[1] = dest;
-        prevMove[0] = src;
-        loop:
-        for(int i=0; i<=1; i++){
-            if(model.getChessPieceAt(src)!= null && model.getChessPieceAt(dest)== null) {
-                if (getModel().isValidMove(src, dest)) {
-                    model.getChessPieceAt(src).setRepeatTurn(model.getChessPieceAt(src).getRepeatTurn()+1);
-                    view.setChessComponentAtGrid(dest, view.removeChessComponentAtGrid(src));
-                    getModel().moveChessPiece(src, dest);
-                    view.repaint();
-                    break loop;
+        Chessboard c = copyFrom(model);
+    //将目前的棋盘复制到c
+    minimax(model, true,0, Integer.MAX_VALUE, Integer.MIN_VALUE);
+        model = copyFrom(c);
+    ChessboardPoint esrc = easyMove(model)[0];
+    ChessboardPoint edest = easyMove(model)[1];
+    //将c的棋子复制回到model
+    model = copyFrom(c);
+    ChessboardPoint src = bMove[0];
+    ChessboardPoint dest = bMove[1];
+
+    loop:
+            for(int i=0; i<=1; i++) {
+                if (model.getChessPieceAt(src) != null && model.getChessPieceAt(dest) == null) {
+                    if (getModel().isValidMove(src, dest)) {
+                        model.getChessPieceAt(src).setRepeatTurn(model.getChessPieceAt(src).getRepeatTurn() + 1);
+                        view.setChessComponentAtGrid(dest, view.removeChessComponentAtGrid(src));
+                        getModel().moveChessPiece(src, dest);
+                        view.repaint();
+                        break loop;
+                    }
+                } else {
+                    if (model.getChessPieceAt(esrc) != null && model.getChessPieceAt(edest) == null) {
+                        if (getModel().isValidMove(esrc, edest)) {
+                            model.getChessPieceAt(esrc).setRepeatTurn(model.getChessPieceAt(esrc).getRepeatTurn() + 1);
+                            view.setChessComponentAtGrid(edest, view.removeChessComponentAtGrid(esrc));
+                            getModel().moveChessPiece(esrc, edest);
+                            view.repaint();
+                            break loop;
+                        }
+                    }
                 }
-            }else{
-                if(model.getChessPieceAt(esrc)!= null && model.getChessPieceAt(edest)== null) {
-                    if (getModel().isValidMove(esrc, edest)) {
-                        model.getChessPieceAt(esrc).setRepeatTurn(model.getChessPieceAt(esrc).getRepeatTurn()+1);
+                if (model.getChessPieceAt(src) != null && model.getChessPieceAt(dest) != null) {
+                    if (getModel().isValidCapture(src, dest)) {
+                        model.getChessPieceAt(src).setRepeatTurn(model.getChessPieceAt(src).getRepeatTurn() + 1);
+                        view.removeChessComponentAtGrid(dest);
+                        view.setChessComponentAtGrid(dest, view.removeChessComponentAtGrid(src));
+                        getModel().captureChessPiece(src, dest);
+                        view.repaint();
+                        break loop;
+                    }
+                } else if ((model.getChessPieceAt(esrc) != null && model.getChessPieceAt(edest) != null)) {
+                    if (getModel().isValidCapture(esrc, edest)) {
+                        model.getChessPieceAt(esrc).setRepeatTurn(model.getChessPieceAt(esrc).getRepeatTurn() + 1);
+                        view.removeChessComponentAtGrid(edest);
                         view.setChessComponentAtGrid(edest, view.removeChessComponentAtGrid(esrc));
-                        getModel().moveChessPiece(esrc, edest);
+                        getModel().captureChessPiece(esrc, edest);
                         view.repaint();
                         break loop;
                     }
                 }
             }
-            if(model.getChessPieceAt(src) != null && model.getChessPieceAt(dest)!= null) {
-                if (getModel().isValidCapture(src, dest)) {
-                    model.getChessPieceAt(src).setRepeatTurn(model.getChessPieceAt(src).getRepeatTurn()+1);
-                    view.removeChessComponentAtGrid(dest);
-                    view.setChessComponentAtGrid(dest, view.removeChessComponentAtGrid(src));
-                    getModel().captureChessPiece(src, dest);
-                    view.repaint();
-                    break loop;
-                }
-            } else if((model.getChessPieceAt(esrc)!= null && model.getChessPieceAt(edest)!= null)) {
-                if (getModel().isValidCapture(esrc, edest)) {
-                    model.getChessPieceAt(esrc).setRepeatTurn(model.getChessPieceAt(esrc).getRepeatTurn()+1);
-                    view.removeChessComponentAtGrid(edest);
-                    view.setChessComponentAtGrid(edest, view.removeChessComponentAtGrid(esrc));
-                    getModel().captureChessPiece(esrc, edest);
-                    view.repaint();
-                    break loop;
-                }
-            }
-        }
-        trappedTurnMultiplier();
-        trappedTurnEraser();
+    trappedTurnMultiplier();
+    trappedTurnEraser();
     }
     public void win() {
         ChessboardPoint redDens = new ChessboardPoint(0, 3);
