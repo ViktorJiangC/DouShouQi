@@ -1,5 +1,11 @@
 package model;
-public class ChessPiece {
+
+import java.io.Serial;
+import java.io.Serializable;
+
+public class ChessPiece implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 7330431136406250138L;
     // the owner of the chess
     private PlayerColor owner;
     // Elephant? Cat? Dog? ...

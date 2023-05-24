@@ -1,49 +1,40 @@
 package controller;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import view.ChessGameFrame;
+
+import java.io.*;
 
 public class GameSaveLoad {
-    private static final String SAVE_FILE = "save.txt";
+    private static final String SAVE_FILE = "memory/save";
 
     // 存档
-    public static void saveGame(String chessboardState, String playerInfo) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(SAVE_FILE))) {
-            writer.write(chessboardState);
-            writer.newLine();
-            writer.write(playerInfo);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public static void saveGame(GameController gameController, int i) throws IOException {
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(SAVE_FILE+i));
+        objectOutputStream.writeObject(gameController);
+        objectOutputStream.flush();
+        objectOutputStream.close();
     }
 
     // 读档
-    public static void loadGame() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(SAVE_FILE))) {
-            String chessboardState = reader.readLine();
-            String playerInfo = reader.readLine();
-
-            // 将读取到的数据重新加载到游戏中
-            // TODO: 这里需要根据你的具体游戏实现来恢复游戏状态
-            System.out.println("棋盘状态：" + chessboardState);
-            System.out.println("玩家信息：" + playerInfo);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public static GameController loadGame(int finalI) throws IOException, ClassNotFoundException {
+        ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(SAVE_FILE+finalI));
+        GameController gameController = (GameController)objectInputStream.readObject();
+        objectInputStream.close();
+        return gameController;
     }
 
     // 示例：保存游戏并读取游戏
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
         String chessboardState = "当前棋盘状态";
         String playerInfo = "玩家信息";
 
-        // 存档
-        saveGame(chessboardState, playerInfo);
+        System.setProperty("file.encoding", "UTF-8");
 
-        // 读档
-        loadGame();
+        ChessGameFrame mainFrame = new ChessGameFrame(1100, 810);
+        GameController gameController2 = loadGame(0);
+
+        gameController2.setView(mainFrame.getChessboardComponent());
+        GameController gameController = new GameController(mainFrame.getChessboardComponent(), gameController2);
+        mainFrame.setVisible(true);
     }
 }

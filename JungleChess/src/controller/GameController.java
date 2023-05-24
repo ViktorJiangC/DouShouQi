@@ -4,6 +4,10 @@ import model.*;
 import view.CellComponent;
 import view.ChessComponent;
 import view.ChessboardComponent;
+
+import java.io.Serial;
+import java.io.Serializable;
+
 import static controller.MinMaxAlgorithm.*;
 
 /**
@@ -13,8 +17,33 @@ import static controller.MinMaxAlgorithm.*;
  * [in this demo the request methods are onPlayerClickCell() and onPlayerClickChessPiece()]
  *
 */
-public class GameController implements GameListener {
+public class GameController implements GameListener, Serializable {
+
+
+    @Serial
+    private static final long serialVersionUID = 577898782661302314L;
+
+    public GameController(ChessboardComponent view, GameController gameController2) {
+        this.view = view;
+        this.model = gameController2.model;
+        this.currentPlayer = gameController2.currentPlayer;
+
+        view.registerController(this);
+        initialize();
+        view.initiateChessComponent(model);
+        view.repaint();
+    }
+
+    public void setModel(Chessboard model) {
+        this.model = model;
+    }
+
     private Chessboard model;
+
+    public void setView(ChessboardComponent view) {
+        this.view = view;
+    }
+
     private ChessboardComponent view;
     private PlayerColor currentPlayer;
 

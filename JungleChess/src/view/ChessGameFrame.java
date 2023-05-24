@@ -1,9 +1,11 @@
 package view;
 
 import controller.GameController;
+import controller.GameSaveLoad;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 /**
  * 这个类表示游戏过程中的整个游戏界面，是一切的载体
@@ -31,6 +33,8 @@ public class ChessGameFrame extends JFrame {
         addChessboard();
         addLabel();
         addHelloButton();
+        addSaveButton();
+        addLoadButton();
     }
 
     public ChessboardComponent getChessboardComponent() {
@@ -65,6 +69,35 @@ public class ChessGameFrame extends JFrame {
         JButton button = new JButton("Start Game?");
         button.addActionListener((e) -> JOptionPane.showMessageDialog(this, "Let's start the game!"));
         button.setLocation(HEIGTH, HEIGTH / 10 + 120);
+        button.setSize(200, 60);
+        button.setFont(new Font("Rockwell", Font.BOLD, 20));
+        add(button);
+    }
+
+
+    private void addSaveButton() {
+        JButton button = new JButton("Save");
+        button.addActionListener((e) -> {
+            new SaveDialog( chessboardComponent.getGameController());
+//            try {
+//                GameSaveLoad.saveGame( chessboardComponent.getGameController());
+//            } catch (IOException ex) {
+//                throw new RuntimeException(ex);
+//            }
+        });
+        button.setLocation(HEIGTH, HEIGTH / 10 + 240);
+        button.setSize(200, 60);
+        button.setFont(new Font("Rockwell", Font.BOLD, 20));
+        add(button);
+    }
+
+
+    private void addLoadButton() {
+        JButton button = new JButton("Load");
+        button.addActionListener((e) -> {
+            LoadGameDialog loadGameDialog = new LoadGameDialog(this);
+        });
+        button.setLocation(HEIGTH, HEIGTH / 10 + 360);
         button.setSize(200, 60);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);

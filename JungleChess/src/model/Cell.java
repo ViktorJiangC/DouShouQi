@@ -1,11 +1,15 @@
 package model;
 
+import java.io.Serial;
 import java.io.Serializable;
 /**
  * This class describe the slot for Chess in Chessboard
  * */
 public class Cell implements Serializable {
     // the position for chess
+
+    @Serial
+    private static final long serialVersionUID = 8907236726766616651L;
     private ChessPiece piece;
     public ChessPiece getPiece() {
         return piece;

@@ -1,10 +1,17 @@
 package model;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * This class store the real chess information.
  * The Chessboard has 9*7 cells, and each cell has a position for chess
  */
-public class Chessboard {
+public class Chessboard implements Serializable {
+
+
+    @Serial
+    private static final long serialVersionUID = 8907236726766616656L;
     private Cell[][] grid;
 
     public Chessboard() {
@@ -43,10 +50,10 @@ public class Chessboard {
         return getGridAt(point).getPiece();
     }
     private Cell getGridAt(ChessboardPoint point) {
-        return grid[point.getRow()][point.getCol()];
+        return grid[point.row()][point.col()];
     }
     private int calculateDistance(ChessboardPoint src, ChessboardPoint dest) {
-        return Math.abs(src.getRow() - dest.getRow()) + Math.abs(src.getCol() - dest.getCol());
+        return Math.abs(src.row() - dest.row()) + Math.abs(src.col() - dest.col());
     }
     public ChessPiece removeChessPiece(ChessboardPoint point) {
         ChessPiece chessPiece = getChessPieceAt(point);
@@ -110,30 +117,30 @@ public class Chessboard {
         return getChessPieceAt(point).getOwner();
     }
     public boolean needJumpOverRiver(ChessboardPoint src, ChessboardPoint dest){
-        if (src.getCol() == dest.getCol() && src.getRow() > dest.getRow()) {
-            for (int i = src.getRow()-1; i >= dest.getRow(); i--) {
-                if (isRiverCell(new ChessboardPoint(i, src.getCol()))) {
+        if (src.col() == dest.col() && src.row() > dest.row()) {
+            for (int i = src.row()-1; i >= dest.row(); i--) {
+                if (isRiverCell(new ChessboardPoint(i, src.col()))) {
                     return true;
                 }
             }
         }
-        if (src.getCol() == dest.getCol() && src.getRow() < dest.getRow()) {
-            for (int i = src.getRow()+1; i <= dest.getRow(); i++) {
-                if (isRiverCell(new ChessboardPoint(i, src.getCol()))) {
+        if (src.col() == dest.col() && src.row() < dest.row()) {
+            for (int i = src.row()+1; i <= dest.row(); i++) {
+                if (isRiverCell(new ChessboardPoint(i, src.col()))) {
                     return true;
                 }
             }
         }
-        if (src.getRow() == dest.getRow() && src.getCol() > dest.getCol()) {
-            for (int i = src.getCol()-1; i >= dest.getCol(); i--) {
-                if (isRiverCell(new ChessboardPoint(src.getRow(), i))) {
+        if (src.row() == dest.row() && src.col() > dest.col()) {
+            for (int i = src.col()-1; i >= dest.col(); i--) {
+                if (isRiverCell(new ChessboardPoint(src.row(), i))) {
                     return true;
                 }
             }
         }
-        if (src.getRow() == dest.getRow() && src.getCol() < dest.getCol()) {
-            for (int i = src.getCol()+1; i <= dest.getCol(); i++) {
-                if (isRiverCell(new ChessboardPoint(src.getRow(), i))) {
+        if (src.row() == dest.row() && src.col() < dest.col()) {
+            for (int i = src.col()+1; i <= dest.col(); i++) {
+                if (isRiverCell(new ChessboardPoint(src.row(), i))) {
                     return true;
                 }
             }
@@ -172,12 +179,12 @@ public class Chessboard {
             return false;
         }
         //front
-        if (src.getCol() == dest.getCol() && src.getRow() > dest.getRow()) {
+        if (src.col() == dest.col() && src.row() > dest.row()) {
             if(calculateDistance(src, dest) != 4){
                 return false;
             }
-            for (int i = src.getRow()-1; i >= dest.getRow(); i--) {
-                ChessboardPoint P = new ChessboardPoint(i, src.getCol());
+            for (int i = src.row()-1; i >= dest.row(); i--) {
+                ChessboardPoint P = new ChessboardPoint(i, src.col());
                 if (getGridAt(P).getPiece() != null) {
                     return false;
                 }
@@ -185,12 +192,12 @@ public class Chessboard {
             return true;
         }
         //back
-        if (src.getCol() == dest.getCol() && src.getRow() < dest.getRow()) {
+        if (src.col() == dest.col() && src.row() < dest.row()) {
             if(calculateDistance(src, dest) != 4){
                 return false;
             }
-            for (int i = src.getRow()+1; i <= dest.getRow(); i++) {
-                ChessboardPoint P = new ChessboardPoint(i, src.getCol());
+            for (int i = src.row()+1; i <= dest.row(); i++) {
+                ChessboardPoint P = new ChessboardPoint(i, src.col());
                 if (getGridAt(P).getPiece() != null) {
                     return false;
                 }
@@ -198,24 +205,24 @@ public class Chessboard {
             return true;
         }
         //left
-        if (src.getRow() == dest.getRow() && src.getCol() > dest.getCol()) {
+        if (src.row() == dest.row() && src.col() > dest.col()) {
             if(calculateDistance(src, dest) != 3){
                 return false;
             }
-            for (int i = src.getCol()-1; i >= dest.getCol(); i--) {
-                if (getGridAt(new ChessboardPoint(src.getRow(), i)).getPiece() != null) {
+            for (int i = src.col()-1; i >= dest.col(); i--) {
+                if (getGridAt(new ChessboardPoint(src.row(), i)).getPiece() != null) {
                     return false;
                 }
             }
             return true;
         }
         //right
-        if (src.getRow() == dest.getRow() && src.getCol() < dest.getCol()) {
+        if (src.row() == dest.row() && src.col() < dest.col()) {
             if(calculateDistance(src, dest) != 3){
                 return false;
             }
-            for (int i = src.getCol()+1; i <= dest.getCol(); i++) {
-                if (getGridAt(new ChessboardPoint(src.getRow(), i)).getPiece() != null) {
+            for (int i = src.col()+1; i <= dest.col(); i++) {
+                if (getGridAt(new ChessboardPoint(src.row(), i)).getPiece() != null) {
                     return false;
                 }
             }
@@ -225,12 +232,12 @@ public class Chessboard {
     }
     public boolean canJumpOverRiverToCapture(ChessboardPoint src, ChessboardPoint dest) {
         //front
-        if (src.getCol() == dest.getCol() && src.getRow() > dest.getRow()) {
+        if (src.col() == dest.col() && src.row() > dest.row()) {
             if(calculateDistance(src, dest) != 4){
                 return false;
             }
-            for (int i = src.getRow()-1; i > dest.getRow(); i--) {
-                ChessboardPoint P = new ChessboardPoint(i, src.getCol());
+            for (int i = src.row()-1; i > dest.row(); i--) {
+                ChessboardPoint P = new ChessboardPoint(i, src.col());
                 if (getChessPieceAt(P) != null) {
                     return false;
                 }
@@ -238,12 +245,12 @@ public class Chessboard {
             return getChessPieceAt(dest).getRank() <= getChessPieceAt(src).getRank();
         }
         //back
-        if (src.getCol() == dest.getCol() && src.getRow() < dest.getRow()) {
+        if (src.col() == dest.col() && src.row() < dest.row()) {
             if(calculateDistance(src, dest) != 4){
                 return false;
             }
-            for (int i = src.getRow()+1; i < dest.getRow(); i++) {
-                ChessboardPoint P = new ChessboardPoint(i, src.getCol());
+            for (int i = src.row()+1; i < dest.row(); i++) {
+                ChessboardPoint P = new ChessboardPoint(i, src.col());
                 if (getChessPieceAt(P) != null) {
                     return false;
                 }
@@ -251,12 +258,12 @@ public class Chessboard {
             return getChessPieceAt(dest).getRank() <= getChessPieceAt(src).getRank();
         }
         //left
-        if (src.getRow() == dest.getRow() && src.getCol() > dest.getCol()) {
+        if (src.row() == dest.row() && src.col() > dest.col()) {
             if(calculateDistance(src, dest) != 3){
                 return false;
             }
-            for (int i = src.getCol()-1; i > dest.getCol(); i--) {
-                ChessboardPoint P = new ChessboardPoint(src.getRow(), i);
+            for (int i = src.col()-1; i > dest.col(); i--) {
+                ChessboardPoint P = new ChessboardPoint(src.row(), i);
                 if (getChessPieceAt(P) != null) {
                     return false;
                 }
@@ -264,12 +271,12 @@ public class Chessboard {
             return getChessPieceAt(dest).getRank() <= getChessPieceAt(src).getRank();
         }
         //right
-        if (src.getRow() == dest.getRow() && src.getCol() < dest.getCol()) {
+        if (src.row() == dest.row() && src.col() < dest.col()) {
             if(calculateDistance(src, dest) != 3){
                 return false;
             }
-            for (int i = src.getCol()+1; i < dest.getCol(); i++) {
-                ChessboardPoint P = new ChessboardPoint(src.getRow(), i);
+            for (int i = src.col()+1; i < dest.col(); i++) {
+                ChessboardPoint P = new ChessboardPoint(src.row(), i);
                 if (getChessPieceAt(P) != null) {
                     return false;
                 }

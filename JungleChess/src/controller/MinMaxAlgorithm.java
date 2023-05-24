@@ -29,8 +29,8 @@ public class MinMaxAlgorithm {
             bestScore = Integer.MIN_VALUE;
             for (ChessboardPoint piece : getRedPieces(board)) {
 
-                int x = piece.getRow();
-                int y = piece.getCol();
+                int x = piece.row();
+                int y = piece.col();
                 if (board.getChessPieceAt(piece).getRank() == 6 || board.getChessPieceAt(piece).getRank() == 7) {
                     for (int[] dir : LTdir) {
                         int dx = dir[0];
@@ -103,8 +103,8 @@ public class MinMaxAlgorithm {
             bestScore = Integer.MAX_VALUE;
             for(ChessboardPoint piece : getBluePieces(board)){
 
-                int x = piece.getRow();
-                int y = piece.getCol();
+                int x = piece.row();
+                int y = piece.col();
                 if(board.getChessPieceAt(piece).getRank()==6 || board.getChessPieceAt(piece).getRank()==7) {
                     for (int[] dir : LTdir) {
                         int dx = dir[0];
@@ -221,12 +221,12 @@ public class MinMaxAlgorithm {
         for(ChessboardPoint P : getRedPieces(board)){
             ChessPiece piece = board.getChessPieceAt(P);
             int rank = piece.getRank();
-            score += (10-rank)*redTable[P.getRow()][P.getCol()];
+            score += (10-rank)*redTable[P.row()][P.col()];
         }
         for(ChessboardPoint P : getBluePieces(board)){
             ChessPiece piece = board.getChessPieceAt(P);
             int rank = piece.getRank();
-            score -= 15*(rank)*blueTable[P.getRow()][P.getCol()];
+            score -= 15*(rank)*blueTable[P.row()][P.col()];
         }
         return score;
     }
@@ -259,8 +259,8 @@ public class MinMaxAlgorithm {
         for (ChessboardPoint piece : getRedPieces(board)) {
             int score;
             int bestScore = Integer.MIN_VALUE;
-            int x = piece.getRow();
-            int y = piece.getCol();
+            int x = piece.row();
+            int y = piece.col();
             if(board.getChessPieceAt(piece).getRank()==6 || board.getChessPieceAt(piece).getRank()==7){
                 for (int[] dir : LTdir) {
                     int dx = dir[0];

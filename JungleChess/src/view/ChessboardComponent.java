@@ -19,6 +19,10 @@ public class ChessboardComponent extends JComponent {
     private final int CHESS_SIZE;
     private final Set<ChessboardPoint> riverCell = new HashSet<>();
 
+    public GameController getGameController() {
+        return gameController;
+    }
+
     private GameController gameController;
     public int getChessSize() {
         return CHESS_SIZE;
@@ -99,7 +103,7 @@ public class ChessboardComponent extends JComponent {
     }
 
     private CellComponent getGridComponentAt(ChessboardPoint point) {
-        return gridComponents[point.getRow()][point.getCol()];
+        return gridComponents[point.row()][point.col()];
     }
 
     private ChessboardPoint getChessboardPoint(Point point) {
