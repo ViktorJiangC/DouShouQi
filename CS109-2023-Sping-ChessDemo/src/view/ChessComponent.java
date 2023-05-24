@@ -1,9 +1,6 @@
 package view;
 
 
-import model.ChessPiece;
-import model.Chessboard;
-import model.ChessboardPoint;
 import model.PlayerColor;
 import javax.swing.*;
 import java.awt.*;
@@ -17,7 +14,18 @@ public class ChessComponent extends JComponent {
     private String name;
 
     private boolean selected;
+    private boolean isValidToBeEat;
+    private ImageIcon icon;
 
+    public ChessComponent(PlayerColor owner, int size, String name,String path) {
+        this.owner = owner;
+        this.selected = false;
+        this.name = name;
+        setSize(size/2, size/2);
+        setLocation(0,0);
+        setVisible(true);
+        icon=new ImageIcon(path);
+    }
     public ChessComponent(PlayerColor owner, int size, String name) {
         this.owner = owner;
         this.selected = false;
@@ -34,6 +42,8 @@ public class ChessComponent extends JComponent {
     public void setSelected(boolean selected) {
         this.selected = selected;
     }
+    public void setValidToBeEat(boolean isValidToBeEat){this.isValidToBeEat=isValidToBeEat;}
+    public boolean isValidToBeEat(){return isValidToBeEat;}
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -42,9 +52,14 @@ public class ChessComponent extends JComponent {
         Font font = new Font("楷体", Font.PLAIN, getWidth() / 2);
         g2.setFont(font);
         g2.setColor(owner.getColor());
+        g2.drawImage(icon.getImage(),0,0,this);
         g2.drawString(this.name, getWidth() / 4, getHeight() * 5 / 8); //FIXME: Use library to find the correct offset.
         if (isSelected()) { //Highlights the model if selected.
             g.setColor(Color.RED);
+            g.drawOval(3, 3 ,getWidth()-6 , getHeight()-6);
+        }
+        if(isValidToBeEat()){
+            g.setColor(Color.blue);
             g.drawOval(3, 3 ,getWidth()-6 , getHeight()-6);
         }
     }

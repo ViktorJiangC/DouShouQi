@@ -9,4 +9,5 @@ public enum Constant {
     public int getNum() {
         return num;
     }
+
 }

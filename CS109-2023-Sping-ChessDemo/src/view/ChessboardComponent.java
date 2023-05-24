@@ -46,11 +46,13 @@ public class ChessboardComponent extends JComponent {
                 if (grid[i][j].getPiece() != null) {
                     ChessPiece chessPiece = grid[i][j].getPiece();
                     System.out.println(chessPiece.getOwner());
-                    gridComponents[i][j].add(new ChessComponent(chessPiece.getOwner(), CHESS_SIZE ,chessPiece.getName()));
+                    gridComponents[i][j].add(new ChessComponent(chessPiece.getOwner(), CHESS_SIZE ,chessPiece.getName(),chessPiece.getPath()));
                 }
             }
         }
-
+    }
+    public void addChessComponent(ChessboardPoint point,ChessPiece Piece){
+        gridComponents[point.getRow()][point.getCol()].add(new ChessComponent(Piece.getOwner(), CHESS_SIZE ,Piece.getName(),Piece.getPath()));
     }
     public void initiateGridComponents() {
         riverCell.add(new ChessboardPoint(3,1));
@@ -72,10 +74,43 @@ public class ChessboardComponent extends JComponent {
                 ChessboardPoint temp = new ChessboardPoint(i, j);
                 CellComponent cell;
                 if (riverCell.contains(temp)) {
-                    cell = new CellComponent(Color.CYAN, calculatePoint(i, j), CHESS_SIZE);
+                    cell = new CellComponent(Color.CYAN, calculatePoint(i, j), CHESS_SIZE,"D:\\桌面\\CS109-2023-Sping-ChessDemo\\pictures\\lake.png");
                     this.add(cell);
-                } else {
-                    cell = new CellComponent(Color.LIGHT_GRAY, calculatePoint(i, j), CHESS_SIZE);
+                }
+                else if(i==0&&j==4){
+                    cell=new CellComponent(Color.WHITE, calculatePoint(i, j), CHESS_SIZE,"D:\\桌面\\CS109-2023-Sping-ChessDemo\\pictures\\jiazi.png");
+                    this.add(cell);
+                }
+                else if(i==0&&j==2){
+                    cell=new CellComponent(Color.WHITE, calculatePoint(i, j), CHESS_SIZE,"D:\\桌面\\CS109-2023-Sping-ChessDemo\\pictures\\jiazi.png");
+                    this.add(cell);
+                }
+                else if(i==1&&j==3){
+                    cell=new CellComponent(Color.WHITE, calculatePoint(i, j), CHESS_SIZE,"D:\\桌面\\CS109-2023-Sping-ChessDemo\\pictures\\jiazi.png");
+                    this.add(cell);
+                }
+                else if(i==8&&j==4){
+                    cell=new CellComponent(Color.WHITE, calculatePoint(i, j), CHESS_SIZE,"D:\\桌面\\CS109-2023-Sping-ChessDemo\\pictures\\jiazi.png");
+                    this.add(cell);
+                }
+                else if(i==8&&j==2){
+                    cell=new CellComponent(Color.WHITE, calculatePoint(i, j), CHESS_SIZE,"D:\\桌面\\CS109-2023-Sping-ChessDemo\\pictures\\jiazi.png");
+                    this.add(cell);
+                }
+                else if(i==7&&j==3){
+                    cell=new CellComponent(Color.WHITE, calculatePoint(i, j), CHESS_SIZE,"D:\\桌面\\CS109-2023-Sping-ChessDemo\\pictures\\jiazi.png");
+                    this.add(cell);
+                }
+                else if(i==0&&j==3){
+                    cell=new CellComponent(Color.WHITE, calculatePoint(i, j), CHESS_SIZE,"D:\\桌面\\CS109-2023-Sping-ChessDemo\\pictures\\home(1).jpg");
+                    this.add(cell);
+                }
+                else if(i==8&&j==3){
+                    cell=new CellComponent(Color.WHITE, calculatePoint(i, j), CHESS_SIZE,"D:\\桌面\\CS109-2023-Sping-ChessDemo\\pictures\\home(1).jpg");
+                    this.add(cell);
+                }
+                else {
+                    cell = new CellComponent(Color.LIGHT_GRAY, calculatePoint(i, j), CHESS_SIZE,"D:\\桌面\\CS109-2023-Sping-ChessDemo\\pictures\\grass.png");
                     this.add(cell);
                 }
                 gridComponents[i][j] = cell;
@@ -84,7 +119,7 @@ public class ChessboardComponent extends JComponent {
     }
     public void registerController(GameController gameController) {
         this.gameController = gameController;
-    }
+    }//这个对对接有用处。
 
     public void setChessComponentAtGrid(ChessboardPoint point, ChessComponent chess) {
         getGridComponentAt(point).add(chess);
@@ -99,7 +134,7 @@ public class ChessboardComponent extends JComponent {
         return chess;
     }
 
-    private CellComponent getGridComponentAt(ChessboardPoint point) {
+    public CellComponent getGridComponentAt(ChessboardPoint point) {
         return gridComponents[point.getRow()][point.getCol()];
     }
 
@@ -110,7 +145,6 @@ public class ChessboardComponent extends JComponent {
     private Point calculatePoint(int row, int col) {
         return new Point(col * CHESS_SIZE, row * CHESS_SIZE);
     }
-
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -132,23 +166,7 @@ public class ChessboardComponent extends JComponent {
         }
     }
     //胜利后的结算动画
-    public void showWinner(PlayerColor playerColor) {
-        new JFrame() {
-            {
-                setSize(300, 200);
-                setLocationRelativeTo(null);
-                setUndecorated(true);
-                setAlwaysOnTop(true);
-                setLayout(new BorderLayout());
-                add(new JLabel(playerColor + " Win!"), BorderLayout.CENTER);
-                setVisible(true);
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                dispose();
-            }
-        };
+    public GameController getGameController() {
+        return gameController;
     }
 }
